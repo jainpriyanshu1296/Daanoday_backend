@@ -1,0 +1,39 @@
+name: Deploy Daanoday Backend
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: daanoday-backend-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, macOS, ARM64]
+
+    steps:
+      - name: Deploy Daanoday Backend
+        shell: bash
+        run: |
+          set -e
+
+          export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+          cd /Users/priyanshujain/Daanoday_backend
+
+          echo "==> Fetching latest code"
+          /usr/bin/git fetch origin main
+
+          echo "==> Syncing production code"
+          /usr/bin/git reset --hard origin/main
+
+          echo "==> Installing dependencies"
+          /opt/homebrew/bin/npm ci
+
+          echo "==> Restarting Daanoday backend"
+          /opt/homebrew/bin/pm2 restart daanoday-backend --update-env
+
+          echo "==> Deployment completed"
+          /opt/homebrew/bin/pm2 status daanoday-backend
