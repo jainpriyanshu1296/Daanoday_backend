@@ -30,7 +30,7 @@ jobs:
           /usr/bin/git reset --hard origin/main
 
           echo "==> Installing dependencies"
-          /opt/homebrew/bin/npm ci
+          /opt/homebrew/bin/npm install
 
           echo "==> Restarting Daanoday backend"
           /opt/homebrew/bin/pm2 restart daanoday-backend --update-env
